@@ -18,6 +18,7 @@ class UserViewModel {
     let service: NetworkManager
     var completion: ((Base?) -> Void)?
     var showAlertClosure: (() -> ())?
+    var isSuccess: Bool = true
     
     var model: Base? {
         didSet {
@@ -40,8 +41,10 @@ class UserViewModel {
             switch result {
             case .success(let model):
                 self.model = model
+                self.isSuccess = true
             case .failure(let err):
                 self.error = err
+                self.isSuccess = false
             }
         }
     }

@@ -10,7 +10,7 @@ import UIKit
 
 class WelcomeVC: UIViewController {
     
-    lazy var label: UILabel = {
+    lazy var nameLabel: UILabel = {
         let lb = UILabel()
         lb.text = "Welcome"
         lb.backgroundColor = .systemPink
@@ -19,7 +19,7 @@ class WelcomeVC: UIViewController {
         return lb
     }()
     
-    let userImage: UIImageView = {
+    lazy var userImage: UIImageView = {
         let iv = UIImageView()
         iv.backgroundColor = .yellow
         iv.layer.cornerRadius = 10
@@ -28,28 +28,51 @@ class WelcomeVC: UIViewController {
         return iv
     }()
     
-    //var model: Base?
-    var infoAvatar: String?
+    lazy var dimissButton: UIButton = {
+        let btn = UIButton()
+        btn.layer.cornerRadius = 5
+        btn.setTitle("Close", for: .normal)
+        btn.tintColor = .green
+        btn.backgroundColor = .systemBlue
+        btn.anchor(top: nil, leading: nil, bottom: nil, trailing: nil, size: .init(width: 160, height: 45))
+        btn.addTarget(self, action: #selector(handleDimiss), for: .touchUpInside)
+        return btn
+    }()
     
-    //    init(data: Base) {
-    //        super.init(nibName: nil, bundle: nil)
-    //        self.model = data
-    //    }
-    //
-    //    required init?(coder: NSCoder) {
-    //        fatalError("init(coder:) has not been implemented")
-    //    }
+    @objc func handleDimiss() {
+        print("handleDimiss")
+        
+    }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    func setupView() {
         view.backgroundColor = .systemPink
         
         view.addSubview(userImage)
         userImage.centerInSuperview()
         
-        view.addSubview(label)
-        label.anchor(top: userImage.bottomAnchor, leading: nil, bottom: nil, trailing: nil, padding: .init(top: 40, left: 0, bottom: 30, right: 0))
-        label.centerXInSuperview()
-
+        view.addSubview(nameLabel)
+        nameLabel.anchor(top: userImage.bottomAnchor, leading: nil, bottom: nil, trailing: nil, padding: .init(top: 40, left: 0, bottom: 30, right: 0))
+        nameLabel.centerXInSuperview()
+        
+        view.addSubview(dimissButton)
+        dimissButton.anchor(top: nameLabel.bottomAnchor, leading: nil, bottom: nil, trailing: nil, padding: .init(top: 40, left: 0, bottom: 30, right: 0))
+        dimissButton.centerXInSuperview()
+    }
+    
+    
+    lazy var viewModel: UserViewModel = {
+        return UserViewModel()
+    }()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupView()
+        
+        viewModel.addObserve { (model) in
+            model?.data?.info?.forEach({ (data) in
+                self.nameLabel.text = data.user_nicename
+                self.userImage.downloadImage(from: URL(string: data.avatar ?? "")!)
+            })
+        }
     }
 }

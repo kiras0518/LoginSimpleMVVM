@@ -1,5 +1,5 @@
 //
-//  UserModel.swift
+//  DataModel.swift
 //  Login
 //
 //  Created by ting on 2020/5/26.
@@ -8,7 +8,8 @@
 
 import Foundation
 
-struct UserModel {
-    let account: String
-    let password: String
+struct Datas: Codable {
+    let code: Int?
+    let msg: String?
+    let info: [Info]?
 }

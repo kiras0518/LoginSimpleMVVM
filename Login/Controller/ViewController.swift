@@ -64,7 +64,6 @@ class ViewController: UIViewController {
     }
     
     weak var longDelegate: LoginDidDelegate?
-    var isSuccess: Bool = true
     var viewModel = UserViewModel()
     
     override func viewDidLoad() {
@@ -82,14 +81,20 @@ extension ViewController: LoginDidDelegate {
         
         guard let account = accountTextField.text else { return }
         guard let passw = passTextField.text else { return }
-        
-        //print("account, passw", account, passw)
+    
         let login = Login(user_login: account, user_pass: passw)
+        let vc = WelcomeVC()
+        vc.viewModel = self.viewModel
         
         viewModel.login(login: login)
         
-        viewModel.showAlertClosure = {
-            self.presentAlert()
+        if !viewModel.isSuccess {
+            present(vc, animated: true, completion: nil)
+            print("OK")
+        } else {
+            viewModel.showAlertClosure = {
+                self.presentAlert()
+            }
         }
     }
     
